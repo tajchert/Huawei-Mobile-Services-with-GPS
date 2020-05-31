@@ -12,7 +12,6 @@ import com.huawei.hms.maps.HuaweiMap
 import com.huawei.hms.maps.MapsInitializer
 import com.huawei.hms.maps.OnMapReadyCallback
 import com.huawei.hms.maps.model.LatLng
-import com.huawei.hms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.huawei.map_fragment.*
 import pl.tajchert.hms.sample.common.MapMarkerFactory
 import pl.tajchert.hms.sample.data.Station
@@ -35,7 +34,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             println("StationCount ${stationList.count()}")
             huaweiMap?.clear()
             stationList.forEach { station ->
-                huaweiMap?.addMarker(getMarkerForStation(station))
+                context?.let { context ->
+                    huaweiMap?.addMarker(mapMarkerFactory.getMarkerForStation(station, context))
+                }
             }
         }
     }
@@ -53,14 +54,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.mapView.getMapAsync(this)
         this.activity?.let { MapsInitializer.initialize(it) }
         return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     fun onClickRandomized(v: View) {
@@ -106,21 +99,4 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         viewModel.liveStations.observe(viewLifecycleOwner, changeObserver)
     }
-
-    private fun getMarkerForStation(station: Station): MarkerOptions? {
-        //This could be extracted to ViewModel but as this is tightly coupled to View and Context for now I would keep it here, also it makes migration to HMS much easier
-        val stationLatLng = LatLng(
-            station.latitude,
-            station.longitude
-        ) //This is important to create LatLng objects in View layer so it is not spread around in you code
-        context?.let { context ->
-            return MarkerOptions().position(stationLatLng)
-                .flat(true)
-                .draggable(false)
-                .anchor(0.5f, 0.5f)
-                .icon(mapMarkerFactory.getMarkerIcon(context))
-        }
-        return null
-    }
-
 }

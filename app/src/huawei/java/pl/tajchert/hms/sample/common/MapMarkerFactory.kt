@@ -7,12 +7,28 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.huawei.hms.maps.model.BitmapDescriptor
 import com.huawei.hms.maps.model.BitmapDescriptorFactory
+import com.huawei.hms.maps.model.LatLng
+import com.huawei.hms.maps.model.MarkerOptions
 import pl.tajchert.hms.sample.R
+import pl.tajchert.hms.sample.data.Station
 
 class MapMarkerFactory {
     private var markerIcon: BitmapDescriptor? = null
 
-    fun getMarkerIcon(context: Context): BitmapDescriptor {
+    fun getMarkerForStation(station: Station, context: Context): MarkerOptions? {
+        //This could be extracted to ViewModel but as this is tightly coupled to View and Context for now I would keep it here, also it makes migration to HMS much easier
+        val stationLatLng = LatLng(
+            station.latitude,
+            station.longitude
+        ) //This is important to create LatLng objects in View layer so it is not spread around in you code
+        return MarkerOptions().position(stationLatLng)
+            .flat(true)
+            .draggable(false)
+            .anchor(0.5f, 0.5f)
+            .icon(getMarkerIcon(context))
+    }
+
+    private fun getMarkerIcon(context: Context): BitmapDescriptor {
         if (markerIcon == null) {
             markerIcon = getMarkerIconFromDrawable(
                 ContextCompat.getDrawable(
@@ -23,7 +39,6 @@ class MapMarkerFactory {
         }
         return markerIcon!!
     }
-
 
     private fun getMarkerIconFromDrawable(drawable: Drawable): BitmapDescriptor {
         val canvas = Canvas()

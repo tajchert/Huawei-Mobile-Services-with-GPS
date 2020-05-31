@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-
+def flavour
 def mapKeysFilePropertiesFile = rootProject.file("mapKeysFile.properties")
 def mapKeysFileProperties = new Properties()
 mapKeysFileProperties.load(new FileInputStream(mapKeysFilePropertiesFile))
@@ -10,10 +10,10 @@ mapKeysFileProperties.load(new FileInputStream(mapKeysFilePropertiesFile))
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    flavorDimensions "default"
 
     defaultConfig {
-        applicationId "pl.tajchert.hms.sample"
-        minSdkVersion build_versions.min_sdk
+        applicationId "pl.tajchert.hms.sample.maps"
         targetSdkVersion build_versions.target_sdk
         versionCode build_versions.versionCode
         versionName build_versions.versionName
@@ -39,6 +39,17 @@ android {
         jvmTarget = "1.8"
     }
 
+    productFlavors {
+        google {
+            flavour = "google"
+            minSdkVersion build_versions.min_sdk
+        }
+        huawei {
+            flavour = "huawei"
+            minSdkVersion build_versions.min_sdk_hms
+        }
+    }
+
 }
 
 dependencies {
@@ -54,12 +65,20 @@ dependencies {
     implementation deps.lifecycle.viewmodel_ktx
     implementation deps.lifecycle.livedata_ktx
 
-    implementation deps.googleMaps.play_services_location
-    implementation deps.googleMaps.play_services_maps
+    googleImplementation deps.googleMaps.play_services_location
+    googleImplementation deps.googleMaps.play_services_maps
+
+    huaweiImplementation deps.huaweiServices.huawei_services_location
+    huaweiImplementation deps.huaweiServices.huawei_services_maps
 
     testImplementation deps.testing.junit
     androidTestImplementation deps.testing.junit_android_x
     androidTestImplementation deps.testing.espresso_core
 }
 
-apply plugin: 'com.google.gms.google-services'
+if (flavour == 'huawei') {
+    apply plugin: 'com.huawei.agconnect'
+} else {
+    apply plugin: 'com.google.gms.google-services'
+}
+

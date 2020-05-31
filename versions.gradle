@@ -5,6 +5,7 @@ build_versions.versionCode = 1
 build_versions.versionName = "1.0"
 build_versions.kotlin_version = '1.3.72'
 build_versions.min_sdk = 14
+build_versions.min_sdk_hms = 19
 build_versions.compile_sdk = 29
 build_versions.target_sdk = 29
 build_versions.build_tools = "29.0.3"
@@ -34,6 +35,12 @@ def googleMaps = [:]
 googleMaps.play_services_location = "com.google.android.gms:play-services-location:17.0.0"
 googleMaps.play_services_maps = "com.google.android.gms:play-services-maps:17.0.0"
 deps.googleMaps = googleMaps
+
+def huaweiServices = [:]
+huaweiServices.huawei_services_core = "com.huawei.agconnect:agconnect-core:1.0.0.300"
+huaweiServices.huawei_services_location = "com.huawei.hms:location:4.0.3.300"
+huaweiServices.huawei_services_maps = "com.huawei.hms:maps:4.0.1.301"
+deps.huaweiServices = huaweiServices
 
 def testing = [:]
 

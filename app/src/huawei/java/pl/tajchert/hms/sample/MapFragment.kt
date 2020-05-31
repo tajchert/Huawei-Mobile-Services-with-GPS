@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.map_fragment.*
+import com.huawei.hms.maps.CameraUpdateFactory
+import com.huawei.hms.maps.HuaweiMap
+import com.huawei.hms.maps.MapsInitializer
+import com.huawei.hms.maps.OnMapReadyCallback
+import com.huawei.hms.maps.model.LatLng
+import com.huawei.hms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.huawei.map_fragment.*
 import pl.tajchert.hms.sample.common.MapMarkerFactory
 import pl.tajchert.hms.sample.data.Station
 import pl.tajchert.hms.sample.databinding.MapFragmentBinding
@@ -27,15 +27,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private val viewModel: MapViewModel by viewModels()
 
-    var googleMap: GoogleMap? = null
-    val mapMarkerFactory = MapMarkerFactory()
+    private var huaweiMap: HuaweiMap? = null
+    private val mapMarkerFactory = MapMarkerFactory()
 
     private val changeObserver = Observer<List<Station>> { stationList ->
         stationList?.let {
             println("StationCount ${stationList.count()}")
-            googleMap?.clear()
+            huaweiMap?.clear()
             stationList.forEach { station ->
-                googleMap?.addMarker(getMarkerForStation(station))
+                huaweiMap?.addMarker(getMarkerForStation(station))
             }
         }
     }
@@ -82,13 +82,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onLowMemory()
     }
 
-    override fun onMapReady(gMap: GoogleMap) {
+    override fun onMapReady(hMap: HuaweiMap) {
         println("Map ready")
-        googleMap = gMap
-        googleMap?.uiSettings?.isZoomControlsEnabled = true
+        huaweiMap = hMap
+        huaweiMap?.uiSettings?.isZoomControlsEnabled = true
 
         //Restore last know map position
-        googleMap?.moveCamera(
+        huaweiMap?.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(
                     viewModel.lastMapLocationLat,
@@ -97,8 +97,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             )
         )
         //Save current position to recreate map in same place
-        googleMap?.setOnCameraIdleListener {
-            googleMap?.cameraPosition?.let {
+        huaweiMap?.setOnCameraIdleListener {
+            huaweiMap?.cameraPosition?.let {
                 viewModel.lastMapLocationLat = it.target.latitude
                 viewModel.lastMapLocationLng = it.target.longitude
                 viewModel.lastMapLocationZoom = it.zoom

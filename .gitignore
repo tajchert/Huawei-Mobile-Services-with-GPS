@@ -93,3 +93,4 @@ mapKeysFile.properties
 
 # Other files that shouldn't be commited
 app/google-services.json
+app/agconnect-services.json

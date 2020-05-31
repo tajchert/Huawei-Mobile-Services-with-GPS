@@ -1,5 +1,9 @@
 # Huawei-Mobile-Services-with-GPS
-Sample integration of Huawei Mobile Services (HMS, Map Kit) for existing app with Google Mobile Services. This repo show how to create HMS flavour of your app and split GPS/HMS imports when using Android Architecture components (LiveData and ModelView).
+Sample integration of Huawei Mobile Services (HMS, Map Kit) for existing app with Google Mobile Services. This repo show how to create HMS flavor of your app and split GPS/HMS imports when using Android Architecture components (LiveData and ModelView).
+
+This sample show Map (HMS or GPS) and when button `Randomize` is pressed generates 1000 random points with custom icons on map.
+
+<img src="images/sample_screenshot_side_by_side.jpg" width="400" alt="Screenshot"/>
 
 ## Why
 To show how to integrate both HMS and GPS services side-by-side. It is done using 2 flavors, to visualize how many object that you wouldn't expect are provider-dependent (ex. `LatLng` or `BitmapDescriptor` just to name few in such simple use case).

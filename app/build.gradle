@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+def mapKeysFilePropertiesFile = rootProject.file("mapKeysFile.properties")
+def mapKeysFileProperties = new Properties()
+mapKeysFileProperties.load(new FileInputStream(mapKeysFilePropertiesFile))
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "pl.tajchert.hms.sample"
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode build_versions.versionCode
+        versionName build_versions.versionName
+        resValue "string", "googleMapsKey", mapKeysFileProperties['googleMapsKey']
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.base.kotlin_stdlib
+    implementation deps.base.appcompat
+    implementation deps.base.core_ktx
+    implementation deps.base.fragment_ktx
+    implementation deps.base.constraintlayout
+
+    implementation deps.lifecycle.legacy_support_v4
+    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.viewmodel_ktx
+    implementation deps.lifecycle.livedata_ktx
+
+    implementation deps.googleMaps.play_services_location
+    implementation deps.googleMaps.play_services_maps
+
+    testImplementation deps.testing.junit
+    androidTestImplementation deps.testing.junit_android_x
+    androidTestImplementation deps.testing.espresso_core
+}
+
+apply plugin: 'com.google.gms.google-services'
